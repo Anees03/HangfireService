@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmailServiceHangfire.Models
+{
+    public partial class VatAttendance
+    {
+        public DateTime? AttDate { get; set; }
+        public int? WorkerId { get; set; }
+        public string? DutyCode { get; set; }
+        public TimeSpan? DutyTime { get; set; }
+        public DateTime? TimeIn { get; set; }
+        public DateTime? TimeOut { get; set; }
+        public short? WorkMin { get; set; }
+        public double? Pdays { get; set; }
+        public double? AbDays { get; set; }
+        public double? LeaveDays { get; set; }
+        public short? LateIn { get; set; }
+        public short? LateOut { get; set; }
+        public short? EarlyIn { get; set; }
+        public short? EarlyOut { get; set; }
+        public short? Otmin { get; set; }
+        public short? Gzotmin { get; set; }
+        public short? BreakMin { get; set; }
+        public bool? StatusP { get; set; }
+        public bool? StatusAb { get; set; }
+        public bool? StatusLi { get; set; }
+        public bool? StatusLo { get; set; }
+        public bool? StatusEi { get; set; }
+        public bool? StatusEo { get; set; }
+        public bool? StatusOt { get; set; }
+        public bool? StatusGzot { get; set; }
+        public bool? StatusGz { get; set; }
+        public bool? StatusDo { get; set; }
+        public bool? StatusLeave { get; set; }
+        public bool? StatusMn { get; set; }
+        public bool? StatusBreak { get; set; }
+        public short? ShifMin { get; set; }
+        public short? BreakMins { get; set; }
+        public string? Remarks { get; set; }
+        public DateTime? Tin0 { get; set; }
+        public DateTime? Tout0 { get; set; }
+        public DateTime? Tin1 { get; set; }
+        public DateTime? Tout1 { get; set; }
+        public DateTime? Tin2 { get; set; }
+        public DateTime? Tout2 { get; set; }
+        public DateTime? Tin3 { get; set; }
+        public DateTime? Tout3 { get; set; }
+        public DateTime? Tin4 { get; set; }
+        public DateTime? Tout4 { get; set; }
+        public DateTime? Tin5 { get; set; }
+        public DateTime? Tout5 { get; set; }
+        public DateTime? Tin6 { get; set; }
+        public DateTime? Tout6 { get; set; }
+        public DateTime? Tin7 { get; set; }
+        public DateTime? Tout7 { get; set; }
+        public DateTime? Tin8 { get; set; }
+        public DateTime? Tout8 { get; set; }
+        public DateTime? Tin9 { get; set; }
+        public DateTime? Tout9 { get; set; }
+        public DateTime? Tin10 { get; set; }
+        public DateTime? Tout10 { get; set; }
+        public DateTime? Tin11 { get; set; }
+        public DateTime? Tout11 { get; set; }
+        public DateTime? Tin12 { get; set; }
+        public DateTime? Tout12 { get; set; }
+        public DateTime? Tin13 { get; set; }
+        public DateTime? Tout13 { get; set; }
+        public DateTime? Tin14 { get; set; }
+        public DateTime? Tout14 { get; set; }
+        public DateTime? Tin15 { get; set; }
+        public DateTime? Tout15 { get; set; }
+        public bool? StatusIn { get; set; }
+        public string? StatusName { get; set; }
+        public string? WorkerTypeName { get; set; }
+        public int? BloodGroupId { get; set; }
+        public string? BloodGroupName { get; set; }
+        public string? WorkerName { get; set; }
+        public string? FatherName { get; set; }
+        public int? PworkerId { get; set; }
+        public string? Cnic { get; set; }
+        public DateTime? CnicexpireDate { get; set; }
+        public string? PhoneNo { get; set; }
+        public int? WorkerTypeId { get; set; }
+        public int? StatusId { get; set; }
+        public string? StatusRemarks { get; set; }
+        public DateTime? WorkerValidDate { get; set; }
+        public string? Address { get; set; }
+        public short? ShiftId { get; set; }
+        public DateTime? Doj { get; set; }
+        public DateTime? ResignDate { get; set; }
+        public string? Rate { get; set; }
+        public int? ReligionId { get; set; }
+        public int? GenderId { get; set; }
+        public string? GenderName { get; set; }
+        public string? ReligionName { get; set; }
+        public string? ShiftName { get; set; }
+        public DateTime? StatusDate { get; set; }
+        public string? CnicfileName { get; set; }
+        public string? RfidcardNo { get; set; }
+        public int? SectId { get; set; }
+        public int? GradeId { get; set; }
+        public string? GradeName { get; set; }
+        public string? SectName { get; set; }
+        public string? TradeName { get; set; }
+        public int? TradeId { get; set; }
+        public string? ContractorName { get; set; }
+        public int? ContractorId { get; set; }
+        public string? VerificationStatusName { get; set; }
+        public int? AttendanceVerificationStatus { get; set; }
+        public string WorkerDate { get; set; } = null!;
+        public int? SectionId { get; set; }
+        public string? SectionName { get; set; }
+        public double? Tarate { get; set; }
+    }
+}

@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmailServiceHangfire.Models
+{
+    public partial class HsmsWorker
+    {
+        public string? StatusName { get; set; }
+        public string? WorkerTypeName { get; set; }
+        public int? BloodGroupId { get; set; }
+        public string? BloodGroupName { get; set; }
+        public string? WorkerName { get; set; }
+        public string? FatherName { get; set; }
+        public string? Cnic { get; set; }
+        public DateTime? CnicexpireDate { get; set; }
+        public string? PhoneNo { get; set; }
+        public int? WorkerTypeId { get; set; }
+        public int? StatusId { get; set; }
+        public string? StatusRemarks { get; set; }
+        public DateTime? WorkerValidDate { get; set; }
+        public string? Address { get; set; }
+        public short? ShiftId { get; set; }
+        public DateTime? Doj { get; set; }
+        public DateTime? ResignDate { get; set; }
+        public string? Rate { get; set; }
+        public int? ReligionId { get; set; }
+        public int? GenderId { get; set; }
+        public string? GenderName { get; set; }
+        public string? ReligionName { get; set; }
+        public string? ShiftName { get; set; }
+        public DateTime? StatusDate { get; set; }
+        public string? CnicfileName { get; set; }
+        public string? RfidcardNo { get; set; }
+        public int? SectId { get; set; }
+        public int? GradeId { get; set; }
+        public string? GradeName { get; set; }
+        public string? SectName { get; set; }
+        public string? PhoneNo2 { get; set; }
+        public string? PhoneNo3 { get; set; }
+        public string? TradeName { get; set; }
+        public double? NormalRate { get; set; }
+        public double? Tarate { get; set; }
+        public double? NormalOtrate { get; set; }
+        public double? Taotrate { get; set; }
+        public int? TradeId { get; set; }
+        public string? SsattachedFileName { get; set; }
+        public DateTime? SsexpireDate { get; set; }
+        public string? SocialSecurityNumber { get; set; }
+        public DateTime? PoliceVerificationDate { get; set; }
+        public DateTime? PoliceVerificationExpireDate { get; set; }
+        public string? PoliceVerificationFileName { get; set; }
+        public string? GiattachedFileName { get; set; }
+        public DateTime? GiexpireDate { get; set; }
+        public string? GroupInsuranceNumber { get; set; }
+        public DateTime? IssueDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public string? MobileNo1 { get; set; }
+        public string? MobileNo2 { get; set; }
+        public DateTime? WelderCertificateExpireDate { get; set; }
+        public DateTime? WelderCertificateIssueDate { get; set; }
+        public string? WelderCertificateFileName { get; set; }
+        public string? WelderCertificateIssuer { get; set; }
+        public string? WelderCertificateApprover { get; set; }
+        public DateTime? MedicalFitnessExpireDate { get; set; }
+        public string? MedicalFitnessFileName { get; set; }
+        public string? MedicalFitnessApprovedBy { get; set; }
+        public DateTime? SafetyOrientationDate { get; set; }
+        public DateTime? SafetyOrientationExpireDate { get; set; }
+        public string? SafetyOrientationApprover { get; set; }
+        public string? HseattachedFileName { get; set; }
+        public string? Eobinumber { get; set; }
+        public DateTime? Eobiexpiredate { get; set; }
+        public string? EobiattachedFileName { get; set; }
+        public DateTime? EobiissuanceDate { get; set; }
+        public string? DriverLicenseNumber { get; set; }
+        public DateTime? DriverLicenseExpireDate { get; set; }
+        public int? DriverLicenseIssuerId { get; set; }
+        public int? DriverLicenseCategoryId { get; set; }
+        public string? DriverLicenseFileName { get; set; }
+        public double? WorkerTarate { get; set; }
+        public double? WorkerNorrmalRate { get; set; }
+        public double? WorkerOttarate { get; set; }
+        public double? WorkerNormalRate { get; set; }
+        public bool? ValidateSkill { get; set; }
+        public bool? DrivingLicense { get; set; }
+        public int? ContractorId { get; set; }
+        public string? ContractorName { get; set; }
+        public string? Jonumber { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? InterviewDate { get; set; }
+        public string? InterviewBy { get; set; }
+        public DateTime? IntervieExpireDate { get; set; }
+        public string? SectionName { get; set; }
+        public int? SectionId { get; set; }
+        public int PworkerId { get; set; }
+        public string? SkillApprovedBy { get; set; }
+        public DateTime? SkillApprovedDate { get; set; }
+        public DateTime? SkillExpireDate { get; set; }
+    }
+}

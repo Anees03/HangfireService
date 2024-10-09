@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "zJT1WHQhZqF4aAu+NFS2nJI3fr5H5GuYPUQaSp8VVtE=",
+  "Source": "EmailServiceHangfire",
+  "BasePath": "_content/EmailServiceHangfire",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

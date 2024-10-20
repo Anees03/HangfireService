@@ -4,33 +4,28 @@ public class EmailJob
 {
     private readonly AttendanceReportService _attendanceService;
     private readonly EmailService _emailService;
+    private readonly ILogger<EmailJob> _logger;
 
-    public EmailJob(AttendanceReportService attendanceService, EmailService emailService)
+    public EmailJob(AttendanceReportService attendanceService, EmailService emailService, ILogger<EmailJob> logger)
     {
         _attendanceService = attendanceService;
         _emailService = emailService;
+        _logger = logger;
     }
 
-    // Schedule the job to run every day at 12 PM, but send the report for the previous day's attendance
-    //public void ScheduleDailyEmailJob()
-    //{
-    //    Hangfire.RecurringJob.AddOrUpdate("daily-attendance-report", () => SendAttendanceReports(), "0 12 * * *");
-    //}
-  
+    // Schedule the job to run every day at 9 AM
     public void ScheduleDailyEmailJob()
     {
-        // This cron expression schedules the job to run every day at 12 noon (0 12 * * *)
-        Hangfire.RecurringJob.AddOrUpdate("daily-attendance-report", () => SendAttendanceReports(), "0 12 * * *");
+        Hangfire.RecurringJob.AddOrUpdate("daily-attendance-report",
+            () => SendAttendanceReports(),
+            "0 9 * * *");  // Hangfire CRON expression for 9 AM daily
     }
 
-
-
     // Send attendance reports to contractors for the previous day
-
     public async Task SendAttendanceReports()
     {
-        // var yesterday = DateTime.Today.AddDays(-1); // Get the previous day's date
-        var yesterday = new DateTime(2023, 06, 03);
+        var yesterday = DateTime.Today.AddDays(-1); // Get the previous day's date
+
         // Get attendance data for yesterday
         var attendanceData = _attendanceService.GetAttendanceDataFromDatabase(yesterday);
 
@@ -44,25 +39,46 @@ public class EmailJob
             var contractorName = contractorGroup.Key.ContractorName;
             var attendanceDate = contractorGroup.Key.AttendanceDate;
 
-            // Generate PDF for the contractor's workers
-            var pdfPath = _attendanceService.GenerateAttendancePdf(contractorName,attendanceDate, contractorGroup.ToList());
+            var excelPath = _attendanceService.GenerateAttendanceExcel(contractorName, attendanceDate, contractorGroup.ToList());
 
-            if (!string.IsNullOrEmpty(pdfPath))
+            if (!string.IsNullOrEmpty(excelPath))
             {
-                // Send the email with the PDF attachment
-                await _emailService.SendEmailAsync(
-                    contractorEmail,
-                    "Daily Attendance Report",
-                    $"Dear {contractorName}, please find attached the attendance report for {attendanceDate:yyyy-MM-dd}.",
-                    new List<string> { pdfPath }
-                );
+                // Retry Logic: Using Exponential Backoff for retrying email sending
+                int retryCount = 0;
+                int maxRetries = 5;
+                bool isEmailSent = false;
+                TimeSpan delay = TimeSpan.FromSeconds(10);  // Initial delay of 10 seconds
+
+                while (!isEmailSent && retryCount < maxRetries)
+                {
+                    try
+                    {
+                        await _emailService.SendEmailAsync(contractorEmail, "Daily Attendance Report", contractorName, new List<string> { excelPath });
+                        _logger.LogInformation($"Email successfully sent to {contractorName} ({contractorEmail})");
+                        isEmailSent = true; // Set flag to exit loop
+                    }
+                    catch (Exception ex)
+                    {
+                        retryCount++;
+                        _logger.LogError($"Error sending email to {contractorEmail}. Attempt {retryCount} of {maxRetries}. Error: {ex.Message}");
+
+                        if (retryCount < maxRetries)
+                        {
+                            await Task.Delay(delay);
+                            // Double the delay for exponential backoff
+                            delay = delay * 2;  // 10s, 20s, 40s, etc.
+                        }
+                        else
+                        {
+                            _logger.LogError($"Failed to send email to {contractorEmail} after {maxRetries} attempts.");
+                        }
+                    }
+                }
             }
             else
             {
-                // Log or handle PDF generation failure
-                Console.WriteLine($"Failed to generate PDF for contractor {contractorName}.");
+                _logger.LogError($"Failed to generate Excel for contractor {contractorName}.");
             }
         }
     }
 }
-

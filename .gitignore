@@ -1,0 +1,95 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+$RECYCLE.BIN/
+
+# Recycle Bin used on file shares
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Microsoft Office temp files
+~$*
+~*.tmp
+*.~*
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored, NuGet restore will download the correct files.
+**/packages/
+# Uncomment if necessary however generally it will be regenerated when needed
+#**/packages/*.*/**
+
+# Azure Web Apps deployment
+.scm/
+
+# JetBrains Rider
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# .NET Core / ASP.NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# End of .NET Core / ASP.NET Core
+
+# Entity Framework
+*.edmx.diagram
+*.edmx.sql
+
+# Windows Store app package directories and files
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+Package.StoreAssociation.xml
+
+# Microsoft Azure Web App publish settings. Sensitive information.
+*.PublishSettings
+
+# Publish Web Output
+wwwroot/
+
+# Hangfire database
+Hangfire.db
+
+# Local History for JetBrains IDEs
+localhistory/
+
+# Windows specific directories
+$tf/
+
+# Rider Generated 
+.idea/
+*.ipr
+*.iws

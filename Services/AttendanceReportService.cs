@@ -1,4 +1,5 @@
-﻿using EmailServiceHangfire.Models;
+﻿using ClosedXML.Excel;
+using EmailServiceHangfire.Models;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
@@ -24,95 +25,96 @@ public class AttendanceReportService
         return (from da in _context.DailyAttendances
                 join c in _context.Contractors on da.ContractorId equals c.PcontractorId
                 join w in _context.Workers on da.WorkerId equals w.PworkerId
-                join t in _context.Trades on w.TradeId equals t.PtradeId  // Join with Trade table
-                where da.AttDate == new DateTime(2023, 06, 03)  // Modify the date for testing
-                where da.Pdays == 1  // Only get workers who are present
+                join t in _context.Trades on w.TradeId equals t.PtradeId
+                join ct in _context.WorkerTypes on w.WorkerTypeId equals ct.PworkerTypeId// Join with Trade table
+                where da.AttDate == date && da.Pdays == 1  // Only get workers who are present
+                
                 select new WorkerAttendance
                 {
                     WorkerID = da.WorkerId,
                     AttendanceDate = da.AttDate,
                     TimeIn = da.TimeIn,
                     TimeOut = da.TimeOut,
+                    WorkMin = da.WorkMin,
                     ContractorEmail = c.EmailAddress,
                     ContractorName = c.ContractorName,
-                    WorkerName = w.WorkerName,  // Assuming WorkerName is in the Workers table
-                    TradeName = t.TradeName     // Get TradeName from the Trades table
+                    WorkerName = w.WorkerName,
+                    CNIC = w.Cnic,// Assuming WorkerName is in the Workers table
+                    TradeName = t.TradeName,    // Get TradeName from the Trades table
+                    WorkerTypeName = ct.WorkerTypeName
                 }).ToList();
     }
 
 
 
-    public string GenerateAttendancePdf(string contractorName, DateTime? attendanceDate, List<WorkerAttendance> attendanceRecords)
+
+    public string GenerateAttendanceExcel(string contractorName, DateTime? attendanceDate, List<WorkerAttendance> attendanceRecords)
     {
         try
         {
-            _logger.LogInformation($"Generating PDF for contractor {contractorName}...");
+            _logger.LogInformation($"Generating Excel for contractor {contractorName}...");
 
-            // Define the file name including the attendance date
-            string fileName = $"Attendance_{contractorName}_{attendanceDate:yyyyMMdd}.pdf";
-            string baseDirectory = AppContext.BaseDirectory;
-            string filePath = Path.Combine(baseDirectory, "GeneratedPdfs", fileName);
-            Directory.CreateDirectory(Path.Combine(baseDirectory, "GeneratedPdfs")); // Ensure the directory exists
+            string fileName = $"Attendance_{contractorName}_{attendanceDate:yyyyMMdd}.xlsx";
+            string filePath = Path.Combine(AppContext.BaseDirectory, "GeneratedExcels", fileName);
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "GeneratedExcels"));
 
-            using (PdfWriter writer = new PdfWriter(filePath))
+            using (var workbook = new XLWorkbook())
             {
-                PdfDocument pdf = new PdfDocument(writer);
-                Document document = new Document(pdf);
+                var worksheet = workbook.Worksheets.Add("Attendance");
 
-                // Add title and header
-                document.Add(new Paragraph($"Attendance Report for {contractorName}")
-                    .SetFontSize(18)
-                    .SetBold());
-                document.Add(new Paragraph($"Date: {attendanceDate:yyyy-MM-dd}").SetFontSize(12));
-                document.Add(new Paragraph(" "));
+                worksheet.Cell(1, 1).Value = "Worker ID";
+                worksheet.Cell(1, 2).Value = "Worker Name";
+                worksheet.Cell(1, 3).Value = "Trade Name";
+                worksheet.Cell(1, 4).Value = "Attendance Date";
+                worksheet.Cell(1, 5).Value = "Time In";
+                worksheet.Cell(1, 6).Value = "Time Out";
+                worksheet.Cell(1, 7).Value = "WorkHours";
+                worksheet.Cell(1, 8).Value = "CNIC";
+                worksheet.Cell(1, 9).Value = "Contract Type";
 
-                // Create a table with headers for Worker Attendance and set the width for each column
-                float[] columnWidths = { 1, 2, 2, 2, 1.5f, 1.5f }; // Adjust the widths according to your content
-                Table table = new Table(UnitValue.CreatePercentArray(columnWidths));
-                table.SetWidth(UnitValue.CreatePercentValue(100)); // Set table width to 100%
+                var headerRange = worksheet.Range("A1:I1");
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
 
-                // Add headers
-                table.AddHeaderCell(new Cell().Add(new Paragraph("Worker ID").SetBold()));
-                table.AddHeaderCell(new Cell().Add(new Paragraph("Worker Name").SetBold()));
-                table.AddHeaderCell(new Cell().Add(new Paragraph("Trade Name").SetBold()));
-                table.AddHeaderCell(new Cell().Add(new Paragraph("Attendance Date").SetBold()));
-                table.AddHeaderCell(new Cell().Add(new Paragraph("Time In").SetBold()));
-                table.AddHeaderCell(new Cell().Add(new Paragraph("Time Out").SetBold()));
-
-                // Add data rows
+                int currentRow = 2;
                 foreach (var record in attendanceRecords)
                 {
-                    table.AddCell(record.WorkerID.ToString());
-                    table.AddCell(record.WorkerName);
-                    table.AddCell(record.TradeName);
+                    worksheet.Cell(currentRow, 1).Value = record.WorkerID.ToString();
+                    worksheet.Cell(currentRow, 2).Value = record.WorkerName;
+                    worksheet.Cell(currentRow, 3).Value = record.TradeName;
+                    worksheet.Cell(currentRow, 4).Value = record.AttendanceDate.HasValue ? record.AttendanceDate.Value.ToString("yyyy-MM-dd") : "";
+                    worksheet.Cell(currentRow, 5).Value = record.TimeIn.HasValue ? record.TimeIn.Value.ToString(@"hh\:mm") : "";
+                    worksheet.Cell(currentRow, 6).Value = record.TimeOut.HasValue ? record.TimeOut.Value.ToString(@"hh\:mm") : "";
 
-                    table.AddCell(record.AttendanceDate.HasValue
-                        ? record.AttendanceDate.Value.ToString("yyyy-MM-dd")
-                        : "");
+                    if (record.WorkMin.HasValue && record.WorkMin > 0)
+                    {
+                        int hours = record.WorkMin.Value / 60;
+                        int minutes = record.WorkMin.Value % 60;
+                        worksheet.Cell(currentRow, 7).Value = $"{hours:D2}:{minutes:D2}";
+                    }
+                    else
+                    {
+                        worksheet.Cell(currentRow, 7).Value = "";
+                    }
 
-                    table.AddCell(record.TimeIn.HasValue
-                        ? record.TimeIn.Value.ToString("hh\\:mm")
-                        : "");
-
-                    table.AddCell(record.TimeOut.HasValue
-                        ? record.TimeOut.Value.ToString("hh\\:mm")
-                        : "");
+                    worksheet.Cell(currentRow, 8).Value = record.CNIC;
+                    worksheet.Cell(currentRow, 9).Value = record.WorkerTypeName;
+                    currentRow++;
                 }
 
-                document.Add(table);
-                document.Close(); // Finalize the document
+                worksheet.Columns().AdjustToContents();
+                workbook.SaveAs(filePath);
             }
 
-            return filePath; // Return the file path of the generated PDF
+            _logger.LogInformation($"Excel successfully generated at: {filePath}");
+            return filePath;
         }
         catch (Exception ex)
         {
-            // Log the error or handle it as necessary
-            _logger.LogError($"Error generating PDF for {contractorName}: {ex.Message}");
+            _logger.LogError($"Error generating Excel for {contractorName}: {ex.Message}");
             return null;
         }
     }
-
 }
 public class WorkerAttendance
 {
@@ -122,6 +124,10 @@ public class WorkerAttendance
     public DateTime? TimeOut { get; set; }         // Nullable TimeSpan
     public string? ContractorEmail { get; set; }
     public string? ContractorName { get; set; }
+    public string? CNIC { get; set; }
+    public short? WorkMin { get; set; }
     public string? WorkerName { get; set; }         // New property
-    public string? TradeName { get; set; }          // New property
+    public string? TradeName { get; set; }
+    public string? WorkerTypeName { get; set; }
+    // New property
 }
